@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flex squares picture</title>
+    <style>
+        .wrapper {
+            background-color: gray;
+            padding: 20px;
+            border-radius: 8px;
+            width: fit-content;
+            height: fit-content;
+            margin: auto;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .row1 {
+            height: 120px;
+        }
+        .purple-rectangle {
+            background-color: #2b0868;
+            width: 400px;
+        }
+        .oranges-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .orange {
+            width: 50px;
+            height: 50px;
+            background-color: orange;
+        }
+        .row2 {
+            justify-content: space-between;
+        }
+        .green {
+            width: 100%;
+            height: 50px;
+            background-color: green;
+        }
+        .pink {
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
+            background-color: pink;
+        }
+        .blue {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="row row1">
+            <div class="purple-rectangle"></div>
+            <div class="oranges-wrapper">
+                <div class="orange"></div>
+                <div class="orange"></div>
+            </div>
+        </div>
+        <div class="row row2">
+            <div class="green"></div>
+            <div class="green"></div>
+            <div class="green"></div>
+        </div>
+        <div class="pink"></div>
+        <div class="blue"></div>
+    </div>
+</body>
+</html>
