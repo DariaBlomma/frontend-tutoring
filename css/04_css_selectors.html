@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS: Селекторы и специфичность</title>
+    <style>
+        :root {
+            --bg-primary: #fafafa;
+            --bg-secondary: #f0f4f8;
+            --bg-accent: #e8f4f8;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --accent-color: #7c9cb4;
+            --accent-light: #b8d4e3;
+            --code-bg: #f7fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-light);
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        ul {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: var(--bg-accent);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 14px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .example-box {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .example-box code {
+            display: block;
+            margin: 8px 0;
+            background: white;
+            padding: 8px 12px;
+        }
+
+        .highlight {
+            background: var(--accent-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-placeholder {
+            width: 200px;
+            height: 80px;
+            margin: 0 auto;
+            background-image: url('../assets/my_logo.png');
+            background-position: center center;
+            background-size: cover;
+        }
+
+        @media print {
+            body {
+                padding: 20px;
+                background: white;
+            }
+
+            .footer {
+                margin-top: 40px;
+            }
+
+            table {
+                box-shadow: none;
+                border: 1px solid var(--border-color);
+            }
+
+            tr:hover {
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>CSS: Селекторы и специфичность</h1>
+<p class="subtitle">Краткое руководство по выбору элементов и приоритету стилей</p>
+
+<h2>1. Типы селекторов</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Селектор</th>
+        <th>Синтаксис</th>
+        <th>Что выбирает</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Универсальный</td>
+        <td><code>*</code></td>
+        <td>Все элементы</td>
+    </tr>
+    <tr>
+        <td>По тегу</td>
+        <td><code>div</code>, <code>p</code></td>
+        <td>Все элементы указанного типа</td>
+    </tr>
+    <tr>
+        <td>По классу</td>
+        <td><code>.btn</code></td>
+        <td>Все элементы с данным классом</td>
+    </tr>
+    <tr>
+        <td>По ID</td>
+        <td><code>#header</code></td>
+        <td>Один элемент с данным ID</td>
+    </tr>
+    <tr>
+        <td>По атрибуту</td>
+        <td><code>[type="text"]</code>, <code>[href]</code></td>
+        <td>Элементы с указанным атрибутом</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>2. Комбинаторы</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Комбинатор</th>
+        <th>Синтаксис</th>
+        <th>Смысл</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Пробел (потомок)</td>
+        <td><code>div p</code></td>
+        <td>Все <code>p</code> внутри <code>div</code> на любом уровне вложенности</td>
+    </tr>
+    <tr>
+        <td><code>&gt;</code> (прямой потомок)</td>
+        <td><code>div &gt; p</code></td>
+        <td>Только <code>p</code>, непосредственный ребёнок <code>div</code></td>
+    </tr>
+    <tr>
+        <td><code>+</code> (соседний)</td>
+        <td><code>h1 + p</code></td>
+        <td>Первый <code>p</code>, идущий сразу после <code>h1</code></td>
+    </tr>
+    <tr>
+        <td><code>~</code> (общий сосед)</td>
+        <td><code>h1 ~ p</code></td>
+        <td>Все <code>p</code>, идущие после <code>h1</code> на том же уровне</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>3. Псевдоклассы и псевдоэлементы</h2>
+
+<h3>Псевдоклассы (состояние элемента)</h3>
+<ul>
+    <li><code>:hover</code>, <code>:focus</code>, <code>:active</code></li>
+    <li><code>:first-child</code>, <code>:last-child</code>, <code>:nth-child(n)</code></li>
+    <li><code>:not(.class)</code></li>
+</ul>
+
+<h3>Псевдоэлементы (часть элемента)</h3>
+<ul>
+    <li><code>::before</code>, <code>::after</code> — генерируемое содержимое</li>
+    <li><code>::first-line</code>, <code>::first-letter</code></li>
+</ul>
+
+<h2>4. Специфичность (вес селектора)</h2>
+<p>Браузер вычисляет вес каждого селектора как кортеж <span class="highlight">(a, b, c)</span>:</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Компонент</th>
+        <th>Что даёт</th>
+        <th>Пример</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>a</strong></td>
+        <td>Количество ID</td>
+        <td><code>#header</code> → (1, 0, 0)</td>
+    </tr>
+    <tr>
+        <td><strong>b</strong></td>
+        <td>Количество классов, атрибутов, псевдоклассов</td>
+        <td><code>.btn</code>, <code>[type]</code>, <code>:hover</code></td>
+    </tr>
+    <tr>
+        <td><strong>c</strong></td>
+        <td>Количество тегов и псевдоэлементов</td>
+        <td><code>div</code>, <code>::before</code></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="example-box">
+    <strong>Важно:</strong> Универсальный селектор <code>*</code> и комбинаторы (<code>&gt;</code>, <code>+</code>, <code>~</code>, пробел) вес не добавляют.
+</div>
+
+<h3>Примеры расчёта</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Селектор</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>Итог</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><code>div</code></td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+        <td>(0, 0, 1)</td>
+    </tr>
+    <tr>
+        <td><code>.container</code></td>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+        <td>(0, 1, 0)</td>
+    </tr>
+    <tr>
+        <td><code>#main</code></td>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+        <td>(1, 0, 0)</td>
+    </tr>
+    <tr>
+        <td><code>div.container</code></td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>(0, 1, 1)</td>
+    </tr>
+    <tr>
+        <td><code>#main .nav a:hover</code></td>
+        <td>1</td>
+        <td>2</td>
+        <td>1</td>
+        <td>(1, 2, 1)</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="example-box">
+    <strong>Правило сравнения:</strong> Селекторы сравниваются поразрядно слева направо: сначала <code>a</code>, потом <code>b</code>, потом <code>c</code>.<br>
+    11 классов <code>(0, 11, 0)</code> <strong>не перебьют</strong> 1 ID <code>(1, 0, 0)</code>.
+</div>
+
+<h2>5. Порядок применения стилей (каскад)</h2>
+<p>Если несколько правил претендуют на один элемент, браузер применяет их в таком порядке приоритета (от низшего к высшему):</p>
+<ol style="margin-left: 24px; margin-bottom: 16px;">
+    <li>Стили браузера по умолчанию (user agent stylesheet)</li>
+    <li>Стили пользователя (настройки браузера)</li>
+    <li>Стили автора (ваш CSS) — с учётом специфичности</li>
+    <li>При равной специфичности — побеждает правило, написанное <strong>ниже</strong> в коде (последнее)</li>
+    <li>Инлайн-стили (<code>style="..."</code> в теге) — вес <code>(1, 0, 0, 0)</code>, выше любого селектора</li>
+    <li><code>!important</code> — перебивает всё, включая инлайн (если оба с <code>!important</code> — снова решает специфичность)</li>
+</ol>
+
+<h2>6. Наследование</h2>
+<p>Не все CSS-свойства наследуются от родителя.</p>
+
+<h3>Наследуются по умолчанию:</h3>
+<p><code>color</code>, <code>font-family</code>, <code>font-size</code>, <code>line-height</code>, <code>text-align</code>, <code>visibility</code>, <code>cursor</code></p>
+
+<h3>Не наследуются:</h3>
+<p><code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>, <code>height</code>, <code>display</code>, <code>position</code></p>
+
+<div class="example-box">
+    Принудительно унаследовать: <code>property: inherit;</code><br>
+    Сбросить к значению по умолчанию: <code>property: initial;</code><br>
+    Взять значение из браузера: <code>property: revert;</code>
+</div>
+
+<h2>7. Практические правила</h2>
+<ul>
+    <li>Используй <strong>классы</strong> как основной инструмент стилизации</li>
+    <li><strong>ID</strong> в селекторах CSS — плохая практика: высокий вес, невозможно переиспользовать, сложно переопределить</li>
+    <li>Избегай длинных цепочек вложенности (<code>div.container ul li a span</code>) — хрупко и тяжело поддерживать</li>
+    <li><code>!important</code> — только для отладки или переопределения сторонних библиотек. В своём коде не использовать</li>
+    <li>Для сброса стилей браузера применяй <code>* { margin: 0; padding: 0; box-sizing: border-box; }</code> в начале файла</li>
+</ul>
+
+<div class="footer">
+    <div></div>
+    <div class="logo-placeholder">
+    </div>
+</div>
+</body>
+</html>
