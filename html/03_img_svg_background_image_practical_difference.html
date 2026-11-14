@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMG, SVG & Background — Шпаргалка с живыми примерами</title>
+    <style>
+        /* ===== БАЗА ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #FDF6F0;
+            color: #4A4A4A;
+            line-height: 1.7;
+        }
+        .hero {
+            background: linear-gradient(135deg, #F5E6D3 0%, #E8D5C4 50%, #D4C4B0 100%);
+            padding: 60px 20px; text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; color: #5C4033; margin-bottom: 10px; }
+        .hero p  { font-size: 1.1rem; color: #8B7355; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .section {
+            background: #FFFFFF; border-radius: 16px; padding: 40px;
+            margin-bottom: 30px; box-shadow: 0 4px 20px rgba(92,64,51,0.08);
+        }
+        .section h2 { font-size: 1.8rem; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; }
+        .section--img h2   { color: #7B9E87; }
+        .section--svg h2   { color: #9B8EC4; }
+        .section--bg h2    { color: #C4956A; }
+        .section h3 {
+            font-size: 1.2rem; margin: 25px 0 12px; color: #5C4033;
+            border-left: 4px solid #E8D5C4; padding-left: 12px;
+        }
+        .section p { margin-bottom: 12px; }
+        pre {
+            background: #F9F3EE; border: 1px solid #EDE4DB; border-radius: 10px;
+            padding: 20px; overflow-x: auto; margin: 15px 0; font-size: 0.9rem; line-height: 1.6;
+        }
+        code { font-family: 'Fira Code', Consolas, monospace; color: #5C4033; }
+        .inline-code { background: #F0E6DC; padding: 2px 8px; border-radius: 4px; font-size: 0.9em; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; border-radius: 10px; overflow: hidden; }
+        th { background: #F5E6D3; color: #5C4033; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #F0E6DC; }
+        tr:last-child td { border-bottom: none; }
+        ul { list-style: none; padding-left: 0; }
+        ul li { padding: 6px 0 6px 24px; position: relative; }
+        ul li::before { content: '•'; position: absolute; left: 0; color: #C4956A; font-weight: bold; }
+        .tip { background: #F0F7F2; border-left: 4px solid #7B9E87; padding: 16px 20px; border-radius: 8px; margin: 15px 0; }
+        .tip--info { background: #F3EEF9; border-left-color: #9B8EC4; }
+        .tip--warn { background: #FFF5F0; border-left-color: #E8A87C; }
+
+        /* ===== ЖИВЫЕ ДЕМО ===== */
+        .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 18px 0; }
+        .demo-card { background: #FDF6F0; border: 1px solid #EDE4DB; border-radius: 12px; padding: 14px; }
+        .demo-card .label {
+            font-size: 0.8rem; font-weight: 700; color: #9B8EC4;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+        }
+        /* рамка-контейнер фикс. размера, чтобы видеть пустоты/обрезку */
+        .frame {
+            width: 100%; height: 180px; border: 2px dashed #D4C4B0; border-radius: 8px;
+            background: #EFE4D6; overflow: hidden; display: block;
+        }
+        .frame img, .frame svg { width: 100%; height: 100%; display: block; }
+        .fit-cover  { object-fit: cover; }
+        .fit-contain{ object-fit: contain; }
+        .fit-fill   { object-fit: fill; }
+
+        /* фоновые демо */
+        .bg-box { width: 100%; height: 180px; border: 2px dashed #D4C4B0; border-radius: 8px; }
+        .bg-size-cover  { background: url('../assets/texture-wood.jpg') center / cover no-repeat; }
+        .bg-size-contain{ background: url('../assets/texture-wood.jpg') center / contain no-repeat #EFE4D6; }
+        .bg-size-px     { background: url('../assets/pattern.png') 0 0 / 100px 100px repeat; }
+        .bg-size-pct    { background: url('../assets/pattern.png') center / 50% auto repeat; }
+        .bg-pos-tl   { background: url('../assets/landscape.jpg') top left / cover no-repeat; }
+        .bg-pos-tr   { background: url('../assets/landscape.jpg') top right / cover no-repeat; }
+        .bg-pos-c    { background: url('../assets/landscape.jpg') center / cover no-repeat; }
+        .bg-pos-pct  { background: url('../assets/landscape.jpg') 20% 80% / cover no-repeat; }
+        .bg-rep-yes  { background: url('../assets/pattern.png') repeat; }
+        .bg-rep-no   { background: url('../assets/pattern.png') no-repeat; }
+        .bg-rep-x    { background: url('../assets/pattern.png') repeat-x; }
+        .bg-rep-y    { background: url('../assets/pattern.png') repeat-y; }
+        .bg-fixed {
+            background: url('../assets/bg-hero.jpg') center / cover fixed no-repeat;
+            height: 240px; border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; color: #fff; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,.5);
+        }
+        .bg-multi {
+            background:
+                    url('../assets/coffee-bean-transparent.png') top left repeat,
+                    linear-gradient(135deg, rgba(252,63,29,0.35), rgba(155,142,196,0.35)),
+                    #F5E6D3;
+            height: 180px; border-radius: 8px; border: 2px dashed #D4C4B0;
+        }
+
+        /* lazy */
+        .lazy-strip { display: grid; gap: 14px; }
+        .lazy-strip img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background: #EFE4D6; }
+
+        /* svg демо */
+        .svg-demo-frame { width: 100%; height: 140px; border: 2px dashed #D4C4B0; border-radius: 8px; background: #EFE4D6; }
+        .icon { width: 48px; height: 48px; display: inline-block; vertical-align: middle; }
+        .icon--green { color: #7B9E87; }
+        .icon--brown { color: #C4956A; }
+        .icon--purple{ color: #9B8EC4; }
+        .icon--hover { color: #7B9E87; transition: color .3s; }
+        .icon--hover:hover { color: #E8A87C; }
+        .file-icon { width: 48px; height: 48px; display: inline-block; vertical-align: middle; }
+        .srcset-img { width: 100%; border-radius: 8px; }
+        footer { text-align: center; padding: 30px; color: #A89888; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <h1>🖼️ IMG, SVG & Background</h1>
+    <p>Шпаргалка с живыми примерами — открой и скролль</p>
+</header>
+
+<main class="container">
+
+    <!-- ==================== IMG ==================== -->
+    <section class="section section--img">
+        <h2>🖼️ IMG — Подводные камни</h2>
+
+        <h3>1. Размеры по умолчанию</h3>
+        <pre><code>&lt;!-- Плохо: картинка вылезет в реальном размере --&gt;
+&lt;img src="../assets/coffee-cup.jpg" alt="Coffee"&gt;
+
+&lt;!-- Хорошо: всегда задавай размеры --&gt;
+&lt;img src="../assets/coffee-cup.jpg" alt="Coffee" width="300" height="200"&gt;</code></pre>
+        <pre><code>.responsive-img {
+  width: 100%;      /* вся ширина контейнера */
+  height: auto;     /* сохраняет пропорции */
+  max-width: 100%;  /* не вылезает за пределы */
+}</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">width:100% + height:auto</div>
+                <img class="srcset-img" src="../assets/coffee-cup.jpg" alt="responsive" style="height:auto;">
+            </div>
+        </div>
+
+        <h3>2. Object-fit — картинка не вписывается</h3>
+        <pre><code>.card-image {
+  width: 300px; height: 200px;
+  object-fit: cover;    /* обрезает лишнее, пропорции ок */
+  /* object-fit: contain; — целиком, могут быть пустоты */
+  /* object-fit: fill; — растягивает (искажает) */
+}</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">cover</div>
+                <span class="frame"><img class="fit-cover" src="../assets/coffee-cup.jpg" alt="cover"></span>
+            </div>
+            <div class="demo-card">
+                <div class="label">contain</div>
+                <span class="frame"><img class="fit-contain" src="../assets/coffee-cup.jpg" alt="contain"></span>
+            </div>
+            <div class="demo-card">
+                <div class="label">fill</div>
+                <span class="frame"><img class="fit-fill" src="../assets/coffee-cup.jpg" alt="fill"></span>
+            </div>
+        </div>
+
+        <h3>3. Lazy loading</h3>
+        <pre><code>&lt;img src="../assets/coffee.jpg" alt="Coffee" loading="lazy"&gt;</code></pre>
+        <div class="tip tip--info">✅ грузится быстрее &nbsp;|&nbsp; ⚠️ LCP (главная картинка) не должна быть lazy</div>
+        <p>Ниже 6 картинок с <code class="inline-code">loading="lazy"</code> — они подгрузятся, только когда ты доскроллишь до них (открой DevTools → Network и прокрути).</p>
+        <div class="lazy-strip">
+            <img loading="lazy" src="../assets/coffee-1.jpg" alt="1">
+            <img loading="lazy" src="../assets/coffee-2.jpg" alt="2">
+            <img loading="lazy" src="../assets/coffee-3.jpg" alt="3">
+            <img loading="lazy" src="../assets/coffee-4.jpg" alt="4">
+            <img loading="lazy" src="../assets/coffee-5.jpg" alt="5">
+            <img loading="lazy" src="../assets/coffee-6.jpg" alt="6">
+        </div>
+
+        <h3>4. Srcset — адаптивные изображения</h3>
+        <pre><code>&lt;img
+  src="../assets/coffee-800.jpg"
+  srcset="../assets/coffee-400.jpg 400w,
+          ../assets/coffee-800.jpg 800w,
+          ../assets/coffee-1024.jpg 1200w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  alt="Coffee"&gt;</code></pre>
+        <div class="tip">Браузер сам выберет размер под экран. Попробуй сузить/расширить окно — в Network поменяется загруженный файл.</div>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">srcset + sizes</div>
+                <img class="srcset-img"
+                     src="../assets/coffee-800.jpg"
+                     srcset="../assets/coffee-400.jpg 400w, ../assets/coffee-800.jpg 800w, ../assets/coffee-1024.jpg 1024w"
+                     sizes="(max-width: 600px) 100vw, 50vw" alt="srcset">
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SVG ==================== -->
+    <section class="section section--svg">
+        <h2>🎨 SVG — Нюансы работы</h2>
+
+        <h3>1. ViewBox — без него не масштабируется</h3>
+        <pre><code>&lt;!-- Без viewBox: иконка 24px застрянет в углу окна 100px --&gt;
+&lt;svg width="100" height="100"&gt;&lt;path d="..." /&gt;&lt;/svg&gt;
+
+&lt;!-- С viewBox: растягивается на всё окно --&gt;
+&lt;svg viewBox="0 0 24 24" width="100" height="100"&gt;&lt;path d="..." /&gt;&lt;/svg&gt;</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">без viewBox</div>
+                <div class="svg-demo-frame">
+                    <svg width="100" height="100" style="color:#9B8EC4;">
+                        <!-- Блюдце -->
+                        <ellipse cx="12" cy="20" rx="8" ry="2" fill="none" stroke="currentColor" stroke-width="1"/>
+
+                        <!-- Чашка -->
+                        <path d="M6 8 L7 18 Q7 20 9 20 L15 20 Q17 20 17 18 L18 8 Z"
+                              fill="currentColor" opacity="0.3"
+                              stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+
+                        <!-- Ручка -->
+                        <path d="M18 10 Q21 10 21 14 Q21 17 18 17"
+                              fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+
+                        <!-- Пар (3 волнистые линии) -->
+                        <path d="M9 6 Q9 4 10 3" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M12 5 Q12 3 13 2" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M15 6 Q15 4 16 3" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+
+                        <!-- Деталь на чашке (линия) -->
+                        <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="demo-card">
+                <div class="label">с viewBox</div>
+                <div class="svg-demo-frame">
+                    <svg width="100" height="100" viewBox="0 0 24 24" style="color:#9B8EC4;">
+                        <!-- Блюдце -->
+                        <ellipse cx="12" cy="20" rx="8" ry="2" fill="none" stroke="currentColor" stroke-width="1"/>
+
+                        <!-- Чашка -->
+                        <path d="M6 8 L7 18 Q7 20 9 20 L15 20 Q17 20 17 18 L18 8 Z"
+                              fill="currentColor" opacity="0.3"
+                              stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+
+                        <!-- Ручка -->
+                        <path d="M18 10 Q21 10 21 14 Q21 17 18 17"
+                              fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+
+                        <!-- Пар (3 волнистые линии) -->
+                        <path d="M9 6 Q9 4 10 3" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M12 5 Q12 3 13 2" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M15 6 Q15 4 16 3" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+
+                        <!-- Деталь на чашке (линия) -->
+                        <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h3>2. Inline SVG vs файл</h3>
+        <pre><code>&lt;!-- Inline: цвет меняется через CSS, анимируется --&gt;
+&lt;svg class="icon"&gt;&lt;path fill="currentColor" d="..." /&gt;&lt;/svg&gt;
+
+&lt;!-- Файл через img: чище HTML, но цвет НЕ менять --&gt;
+&lt;img src="../assets/leaf-icon.svg" alt="Icon"&gt;</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">inline (наведи!) меняет цвет</div>
+                <svg class="icon icon--hover" viewBox="0 0 24 24">
+                    <!-- Основной контур листа -->
+                    <path d="M12 2 C6 6 4 12 6 18 C8 22 12 23 12 23 C12 23 16 22 18 18 C20 12 18 6 12 2 Z"
+                          fill="currentColor" opacity="0.5"/>
+
+                    <!-- Центральная прожилка -->
+                    <path d="M12 3 L12 22"
+                          stroke="currentColor" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+
+                    <!-- Боковые прожилки (слева) -->
+                    <path d="M12 7 Q9 8 7 10"
+                          fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+                    <path d="M12 11 Q9 12 7 14"
+                          fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+                    <path d="M12 15 Q10 16 8 18"
+                          fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+
+                    <!-- Боковые прожилки (справа) -->
+                    <path d="M12 7 Q15 8 17 10"
+                          fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+                    <path d="M12 11 Q15 12 17 14"
+                          fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+                    <path d="M12 15 Q14 16 16 18"
+                          fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+
+                    <!-- Блик на листе -->
+                    <path d="M10 5 Q11 8 10 12"
+                          fill="none" stroke="white" stroke-width="0.5" opacity="0.3" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="demo-card">
+                <div class="label">файл через img (цвет зашит)</div>
+                <img class="file-icon" src="../assets/leaf-icon.svg" alt="leaf file">
+            </div>
+        </div>
+
+        <h3>3. PreserveAspectRatio — как SVG вписывается</h3>
+        <pre><code>&lt;svg viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet"&gt;</code></pre>
+        <table>
+            <tr><th>Значение</th><th>Аналог</th><th>Что делает</th></tr>
+            <tr><td>meet</td><td>object-fit: contain</td><td>вписывает целиком</td></tr>
+            <tr><td>slice</td><td>object-fit: cover</td><td>заполняет, обрезает</td></tr>
+            <tr><td>none</td><td>object-fit: fill</td><td>растягивает</td></tr>
+        </table>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">meet</div>
+                <div class="svg-demo-frame">
+                    <svg viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet" width="100%" height="100%">
+                        <rect x="2" y="2" width="96" height="46" fill="none" stroke="#9B8EC4" stroke-width="2"/>
+                        <circle cx="50" cy="25" r="15" fill="#E8A87C"/>
+                        <line x1="2" y1="2" x2="98" y2="48" stroke="#7B9E87" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="demo-card">
+                <div class="label">slice</div>
+                <div class="svg-demo-frame">
+                    <svg viewBox="0 0 100 50" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+                        <rect x="2" y="2" width="96" height="46" fill="none" stroke="#9B8EC4" stroke-width="2"/>
+                        <circle cx="50" cy="25" r="15" fill="#E8A87C"/>
+                        <line x1="2" y1="2" x2="98" y2="48" stroke="#7B9E87" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="demo-card">
+                <div class="label">none</div>
+                <div class="svg-demo-frame">
+                    <svg viewBox="0 0 100 50" preserveAspectRatio="none" width="100%" height="100%">
+                        <rect x="2" y="2" width="96" height="46" fill="none" stroke="#9B8EC4" stroke-width="2"/>
+                        <circle cx="50" cy="25" r="15" fill="#E8A87C"/>
+                        <line x1="2" y1="2" x2="98" y2="48" stroke="#7B9E87" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h3>4. CurrentColor — наследование цвета</h3>
+        <pre><code>.icon { color: #6B8E5A; }
+&lt;svg class="icon"&gt;&lt;path fill="currentColor" d="..." /&gt;&lt;/svg&gt;</code></pre>
+        <div class="tip">Меняешь <code class="inline-code">color</code> в CSS — иконка красится автоматически.</div>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="label">3 цвета одним кодом</div>
+                <svg class="icon icon--green" viewBox="0 0 24 24">
+                    <!-- Тело / плечи -->
+                    <path d="M4 21 C4 16 7 13 12 13 C17 13 20 16 20 21 Z"
+                          fill="currentColor" opacity="0.85"/>
+
+                    <!-- Голова -->
+                    <circle cx="12" cy="8" r="4" fill="currentColor" opacity="0.85"/>
+
+                    <!-- Контур тела -->
+                    <path d="M4 21 C4 16 7 13 12 13 C17 13 20 16 20 21"
+                          fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+
+                    <!-- Контур головы -->
+                    <circle cx="12" cy="8" r="4"
+                            fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+
+                    <!-- Воротник / деталь -->
+                    <path d="M9 14 Q12 16 15 14"
+                          fill="none" stroke="white" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+
+                    <!-- Блик на голове -->
+                    <path d="M10 6 Q11 5 12 5"
+                          fill="none" stroke="white" stroke-width="0.5" opacity="0.35" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="icon icon--brown" viewBox="0 0 24 24">
+                    <path d="M4 21 C4 16 7 13 12 13 C17 13 20 16 20 21 Z" fill="currentColor" opacity="0.85"/>
+                    <circle cx="12" cy="8" r="4" fill="currentColor" opacity="0.85"/>
+                    <path d="M4 21 C4 16 7 13 12 13 C17 13 20 16 20 21" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <path d="M9 14 Q12 16 15 14" fill="none" stroke="white" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+                    <path d="M10 6 Q11 5 12 5" fill="none" stroke="white" stroke-width="0.5" opacity="0.35" stroke-linecap="round"/>
+                </svg>
+
+                <svg class="icon icon--purple" viewBox="0 0 24 24">
+                    <path d="M4 21 C4 16 7 13 12 13 C17 13 20 16 20 21 Z" fill="currentColor" opacity="0.85"/>
+                    <circle cx="12" cy="8" r="4" fill="currentColor" opacity="0.85"/>
+                    <path d="M4 21 C4 16 7 13 12 13 C17 13 20 16 20 21" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <path d="M9 14 Q12 16 15 14" fill="none" stroke="white" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+                    <path d="M10 6 Q11 5 12 5" fill="none" stroke="white" stroke-width="0.5" opacity="0.35" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== BACKGROUND ==================== -->
+    <section class="section section--bg">
+        <h2>🎨 Background — Особенности</h2>
+
+        <h3>1. Размер фона</h3>
+        <pre><code>background-size: cover;     /* заполняет блок */
+background-size: contain;   /* вписывает целиком */
+background-size: 100px 100px;
+background-size: 50% auto;</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card"><div class="label">cover</div><div class="bg-box bg-size-cover"></div></div>
+            <div class="demo-card"><div class="label">contain</div><div class="bg-box bg-size-contain"></div></div>
+            <div class="demo-card"><div class="label">100px (tile)</div><div class="bg-box bg-size-px"></div></div>
+            <div class="demo-card"><div class="label">50% auto</div><div class="bg-box bg-size-pct"></div></div>
+        </div>
+
+        <h3>2. Позиция фона</h3>
+        <pre><code>background-position: center center;
+background-position: top right;
+background-position: 20px 50px;
+background-position: 50% 50%;</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card"><div class="label">top left</div><div class="bg-box bg-pos-tl"></div></div>
+            <div class="demo-card"><div class="label">top right</div><div class="bg-box bg-pos-tr"></div></div>
+            <div class="demo-card"><div class="label">center</div><div class="bg-box bg-pos-c"></div></div>
+            <div class="demo-card"><div class="label">20% 80%</div><div class="bg-box bg-pos-pct"></div></div>
+        </div>
+
+        <h3>3. Повторение</h3>
+        <pre><code>background-repeat: repeat;    /* по умолчанию */
+background-repeat: no-repeat;
+background-repeat: repeat-x;  /* по горизонтали */
+background-repeat: repeat-y;  /* по вертикали */</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card"><div class="label">repeat</div><div class="bg-box bg-rep-yes"></div></div>
+            <div class="demo-card"><div class="label">no-repeat</div><div class="bg-box bg-rep-no"></div></div>
+            <div class="demo-card"><div class="label">repeat-x</div><div class="bg-box bg-rep-x"></div></div>
+            <div class="demo-card"><div class="label">repeat-y</div><div class="bg-box bg-rep-y"></div></div>
+        </div>
+
+        <h3>4. Фиксированный фон (параллакс)</h3>
+        <pre><code>.hero {
+  background-image: url('../assets/bg-hero.jpg');
+  background-attachment: fixed;   /* фон стоит при скролле */
+  background-size: cover;
+}</code></pre>
+        <div class="tip tip--warn">Скролль страницу — картинка ниже остаётся на месте, а рамка движется.</div>
+        <div class="bg-fixed">Параллакс: скролль меня</div>
+
+        <h3>5. Множественные фоны</h3>
+        <pre><code>.box {
+  background:
+    url('../assets/pattern.png') top left repeat,
+    linear-gradient(135deg, rgba(252,63,29,.35), rgba(155,142,196,.35)),
+    #F5E6D3;  /* цвет под слоями */
+}</code></pre>
+        <div class="demo-grid">
+            <div class="demo-card"><div class="label">pattern + градиент + цвет</div><div class="bg-multi"></div></div>
+        </div>
+    </section>
+
+</main>
+
+<footer>© 2026 — шпаргалка IMG / SVG / Background</footer>
+
+</body>
+</html>

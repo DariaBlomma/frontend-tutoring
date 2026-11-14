@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon--hover" viewBox="0 0 24 24">
+    <!-- Основной контур листа -->
+    <path d="M12 2 C6 6 4 12 6 18 C8 22 12 23 12 23 C12 23 16 22 18 18 C20 12 18 6 12 2 Z"
+          fill="#c57a34" opacity="0.5"/>
+
+    <!-- Центральная прожилка -->
+    <path d="M12 3 L12 22"
+          stroke="#c57a34" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+
+    <!-- Боковые прожилки (слева) -->
+    <path d="M12 7 Q9 8 7 10"
+          fill="none" stroke="#c57a34" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+    <path d="M12 11 Q9 12 7 14"
+          fill="none" stroke="#c57a34" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+    <path d="M12 15 Q10 16 8 18"
+          fill="none" stroke="#c57a34" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+
+    <!-- Боковые прожилки (справа) -->
+    <path d="M12 7 Q15 8 17 10"
+          fill="none" stroke="#c57a34" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+    <path d="M12 11 Q15 12 17 14"
+          fill="none" stroke="#c57a34" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+    <path d="M12 15 Q14 16 16 18"
+          fill="none" stroke="#c57a34" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+
+    <!-- Блик на листе -->
+    <path d="M10 5 Q11 8 10 12"
+          fill="none" stroke="white" stroke-width="0.5" opacity="0.3" stroke-linecap="round"/>
+</svg>
